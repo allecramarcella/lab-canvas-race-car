@@ -31,18 +31,24 @@ const gameArea = {
     frames: 0,
     start: function () {
         this.ctx= this.canvas.getContext('2d')
-        this.interval = setInterval(updateObstacles, 20)
+        this.interval = setInterval(updateObstacles, 100)
         updateGameArea()
+        
     },
     clear: function (){
-        this.ctx.clearRect(player.x - 25, player.y, player.x + 50, 100)
+        this.ctx.clearRect(0, 0, 500, 700)
+    },
+    stop: function (){
+      clearInterval(this.interval)
     },
 }
 
 function updateGameArea (){
     gameArea.clear()
     player.update()
+    drawScore()
     updateObstacles()
+    crash(obstacles)
     requestAnimationFrame(updateGameArea)
 }
 
@@ -54,16 +60,11 @@ class Player {
   }
   
   update () {
-    
-    
-    
     let initialX = this.x
     let initialY = this.y
 
-    // carImg.onload = function(){
-        const ctx = canvas.getContext('2d')
-        ctx.drawImage(carImg, initialX, initialY, 50, 100)
-  //   }
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(carImg, initialX, initialY, 50, 100)
    }
   
   moveLeft(){
@@ -86,11 +87,9 @@ document.addEventListener('keydown', (e) => {
     switch(e.key) {
     case 'ArrowLeft':
         player.moveLeft()
-        
         break;
     case 'ArrowRight':
         player.moveRight()
-        
         break;
     }
 })
@@ -102,50 +101,59 @@ class Obstacle {
       this.color = color;
       this.x = x;
       this.y = y;
-    //   this.speedX = 0;
-    //   this.speedY = 0;
     }
 
     update() {
         const ctx = canvas.getContext('2d')
-        // ctx.clearRect(this.x, this.y, 200, 50)
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
       }
-
-//   newPos() {
-//     this.x += this.speedX;
-//     this.y += this.speedY;
-//   }
 }
 
 const obstacles = []
 
 function updateObstacles() {
-    
     gameArea.frames += 1;
-    if (gameArea.frames % 80 === 0) {
-      let x = 60 + (Math.random() * 170)
-      let minWidth = 50;
+    if (gameArea.frames % 250 === 0) {
+      let x = 60 + (Math.random() * 280)
+      let minWidth = 100;
       let maxWidth = 150;
       let width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth);
-      // let minGap = 0;
-      // let maxGap = 250;
-      // let gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-      obstacles.push(new Obstacle(width, 10, 'red', x, 0));
-      // obstacles.push(new Obstacle(width, 10, 'blue', x + gap, 0));
-      // obstacles.push(new Obstacle(x- width -gap, 10, 'pink', x, height + gap));
-    //   obstacles.push(new Obstacle(100, 15, 'yellow', 50, 0))
+      obstacles.push(new Obstacle(width, 15, 'red', x, 0));
     }
 
     for (i = 0; i < obstacles.length; i++) {
-        obstacles[i].y -= -1;
+        obstacles[i].y += 1;
         obstacles[i].update();
       }
-  }
+}
 
-
+function crash(obstacles) {
+  console.log('yes, i have been called')
+  obstacles.forEach((obstacle, index) => {
+    const distanceX = (obstacle.y + 15) - (player.y + 100)
+    
+    if(distanceX > -100) {
+      obstacles.splice(index, 1)
+      updateScore()
+    }
   
+  })
+}
+
+function updateScore() {
+  let score = 0
+  let count = 1
+  score += count
+}
+
+function drawScore() {
+  const ctx = canvas.getContext('2d')
+
+  ctx.fillStyle = 'black'
+  ctx.font = '30px Arial'
+  ctx.fillText(`Score: ${updateScore()}`, 10, 25)
+}
 
 
 
