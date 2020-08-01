@@ -4,6 +4,8 @@
 const backgroundCanvas = document.getElementById('background-canvas')
 const backgroundCtx = backgroundCanvas.getContext('2d')
 
+const carImg = new Image()
+carImg.src = './images/car.png'
 
 
 window.onload = () => {
@@ -24,8 +26,6 @@ function loadBackground() {
     }
 }
 
-
-
 const gameArea = {
     canvas: document.getElementById('canvas'),
     frames: 0,
@@ -35,7 +35,7 @@ const gameArea = {
         updateGameArea()
     },
     clear: function (){
-        this.ctx.clearRect(0, 0, 500, 700)
+        this.ctx.clearRect(player.x - 25, player.y, player.x + 50, 100)
     },
 }
 
@@ -43,6 +43,7 @@ function updateGameArea (){
     gameArea.clear()
     player.update()
     updateObstacles()
+    requestAnimationFrame(updateGameArea)
 }
 
 class Player {
@@ -53,16 +54,16 @@ class Player {
   }
   
   update () {
-    const carImg = new Image()
-    carImg.src = './images/car.png'
+    
+    
     
     let initialX = this.x
     let initialY = this.y
 
-    carImg.onload = function(){
+    // carImg.onload = function(){
         const ctx = canvas.getContext('2d')
         ctx.drawImage(carImg, initialX, initialY, 50, 100)
-    }
+  //   }
    }
   
   moveLeft(){
@@ -85,11 +86,11 @@ document.addEventListener('keydown', (e) => {
     switch(e.key) {
     case 'ArrowLeft':
         player.moveLeft()
-        requestAnimationFrame(updateGameArea)
+        
         break;
     case 'ArrowRight':
         player.moveRight()
-        requestAnimationFrame(updateGameArea)
+        
         break;
     }
 })
@@ -107,7 +108,7 @@ class Obstacle {
 
     update() {
         const ctx = canvas.getContext('2d')
-        ctx.clearRect(this.x, this.y, 200, 50)
+        // ctx.clearRect(this.x, this.y, 200, 50)
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
       }
@@ -124,15 +125,16 @@ function updateObstacles() {
     
     gameArea.frames += 1;
     if (gameArea.frames % 80 === 0) {
-      let x = 500;
+      let x = 60 + (Math.random() * 170)
       let minWidth = 50;
-      let maxWidth = 200;
+      let maxWidth = 150;
       let width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth);
-      let minGap = 50;
-      let maxGap = 150;
-      let gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-      obstacles.push(new Obstacle(width, 10, 'red', 50, 0));
-      obstacles.push(new Obstacle(x- width -gap, 10, 'pink', x, height + gap));
+      // let minGap = 0;
+      // let maxGap = 250;
+      // let gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
+      obstacles.push(new Obstacle(width, 10, 'red', x, 0));
+      // obstacles.push(new Obstacle(width, 10, 'blue', x + gap, 0));
+      // obstacles.push(new Obstacle(x- width -gap, 10, 'pink', x, height + gap));
     //   obstacles.push(new Obstacle(100, 15, 'yellow', 50, 0))
     }
 

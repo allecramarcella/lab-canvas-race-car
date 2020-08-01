@@ -32,14 +32,14 @@ class Player {
   }
   
   moveLeft(){
-    if(this.x >= 30) {
+    if(this.x >= 60) {
       this.x -= this.speedX
     }
     updateCar()
   }
 
   moveRight(){
-    if(this.x <= 670) {
+    if(this.x <= 400) {
       this.x += this.speedX
     }
   }
